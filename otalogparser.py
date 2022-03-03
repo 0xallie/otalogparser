@@ -50,6 +50,8 @@ for line in p.stdout.splitlines():
         if sep_version:
             print("SEP version:", sep_version.group().decode())
             break
+        else:
+            sys.exit("ERROR: Field does not contain SEP version?!")
 else:
     sys.exit("ERROR: Unable to find SEP version in BCert")
 
