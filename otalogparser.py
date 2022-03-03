@@ -12,6 +12,8 @@ from pyasn1.codec.der.decoder import decode
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file", help="OTAUpdate.ips log file to read")
+parser.add_argument("--print-bcert", action="store_true", help="print BCert")
+parser.add_argument("--print-tss-request", action="store_true", help="print TSS request")
 args = parser.parse_args()
 
 tss_request = None
@@ -30,7 +32,10 @@ else:
 
 for line in lines:
     if "failed tss request:<<<<<<<<<<" in line:
-        tss_request = plistlib.loads(base64.b64decode(lines[lines.index(line) + 1]))
+        tss_request = base64.b64decode(lines[lines.index(line) + 1])
+        if args.print_tss_request:
+            print(tss_request.decode())
+        tss_request = plistlib.loads(tss_request)
         break
 
 if not tss_request:
@@ -38,6 +43,9 @@ if not tss_request:
 
 if "@BCert" not in tss_request:
     sys.exit("ERROR: No BCert found in TSS request")
+
+if args.print_bcert:
+    print(base64.b64encode(tss_request["@BCert"]).decode())
 
 asn1, _ = decode(tss_request["@BCert"])
 try:
