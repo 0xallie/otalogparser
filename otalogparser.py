@@ -2,11 +2,12 @@
 
 import argparse
 import base64
-from pathlib import Path
 import plistlib
 import re
-import subprocess
 import sys
+from pathlib import Path
+
+from pyasn1.codec.der.decoder import decode
 
 
 parser = argparse.ArgumentParser()
@@ -38,22 +39,16 @@ if not tss_request:
 if "@BCert" not in tss_request:
     sys.exit("ERROR: No BCert found in TSS request")
 
-p = subprocess.run(["openssl", "asn1parse", "-inform", "DER", "-in", "-"], input=tss_request["@BCert"], capture_output=True)
-match = False
-for line in p.stdout.splitlines():
-    if b"1.2.840.113635.100.8.7" in line:
-        match = True
-        continue
-    if match:
-        data = bytes.fromhex(line.split(b":")[-1].decode())
-        sep_version = re.search(br"[\d.]+$", data)
-        if sep_version:
-            print("SEP version:", sep_version.group().decode())
-            break
-        else:
-            sys.exit("ERROR: Field does not contain SEP version?!")
-else:
+asn1, _ = decode(tss_request["@BCert"])
+try:
+    data = str(asn1[0][-1][-1][-1])
+except LookupError:
     sys.exit("ERROR: Unable to find SEP version in BCert")
+sep_version = re.search(r"[\d.]+$", data)
+if sep_version:
+    print("SEP version:", sep_version.group())
+else:
+    sys.exit("ERROR: Field does not contain SEP version?!")
 
 for line in lines:
     if "STATUS=" in line:
