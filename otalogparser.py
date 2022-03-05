@@ -65,7 +65,7 @@ if not tss_request:
     fatal("Unable to find TSS request in log file")
 
 if "@BCert" not in tss_request:
-    warning("No BCert found in TSS request. Are you supervised?")
+    fatal("No BCert found in TSS request. Are you supervised?")
 
 if args.print_bcert:
     print(base64.b64encode(tss_request["@BCert"]).decode())
