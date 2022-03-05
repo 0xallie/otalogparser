@@ -13,7 +13,7 @@ from rich import print
 
 
 def info(msg):
-    print(f"[bold white]ℹ️  {msg}[/bold white]")
+    print(f"[bold white]ℹ️ {msg}[/bold white]")
 
 
 def success(msg):
@@ -21,7 +21,7 @@ def success(msg):
 
 
 def warning(msg):
-    print(f"[bold yellow]⚠️  {msg}[/bold yellow]")
+    print(f"[bold yellow]⚠️ {msg}[/bold yellow]")
 
 
 def error(msg):
