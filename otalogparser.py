@@ -54,6 +54,14 @@ else:
     warning("Managed request line not found in log file. Are you supervised?")
 
 for line in lines:
+    if m := re.search(r"preallocation of (\d+) bytes failed", line):
+        size = int(m.group(1))
+        if size >= 1024**3:
+            size = f"{size / 1000**3:.2f} GB"
+        else:
+            size = f"{size / 1000**3:.2f} MB"
+        fatal(f"Insufficient available storage. Update requires at least {size}.")
+
     if "failed tss request:<<<<<<<<<<" in line:
         tss_request = base64.b64decode(lines[lines.index(line) + 1])
         if args.print_tss_request:
