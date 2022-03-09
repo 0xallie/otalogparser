@@ -59,7 +59,7 @@ for line in lines:
         if size >= 1024**3:
             size = f"{size / 1000**3:.2f} GB"
         else:
-            size = f"{size / 1000**3:.2f} MB"
+            size = f"{size / 1000**2:.2f} MB"
         fatal(f"Insufficient available storage. Update requires at least {size}.")
 
     if "failed tss request:<<<<<<<<<<" in line:
