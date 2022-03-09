@@ -54,6 +54,14 @@ else:
     warning("Managed request line not found in log file. Are you supervised?")
 
 for line in lines:
+    if m := re.search(r"Still short (\d+) free space bytes", line):
+        size = int(m.group(1))
+        if size >= 1024**3:
+            size = f"{size / 1000**3:.2f} GB"
+        else:
+            size = f"{size / 1000**2:.2f} MB"
+        warning(f"Update needs {size} more free space")
+
     if m := re.search(r"preallocation of (\d+) bytes failed", line):
         size = int(m.group(1))
         if size >= 1024**3:
