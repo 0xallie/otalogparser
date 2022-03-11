@@ -75,7 +75,6 @@ for line in lines:
         if args.print_tss_request:
             print(tss_request.decode())
         tss_request = plistlib.loads(tss_request)
-        break
 
 if not tss_request:
     fatal("Unable to find TSS request in log file")
