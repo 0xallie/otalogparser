@@ -70,7 +70,7 @@ for line in lines:
             size = f"{size / 1000**2:.2f} MB"
         fatal(f"Insufficient available storage. Update requires at least {size}.")
 
-    if "failed tss request:<<<<<<<<<<" in line:
+    if "tss request:<<<<<<<<<<" in line:
         tss_request = base64.b64decode(lines[lines.index(line) + 1])
         if args.print_tss_request:
             print(tss_request.decode())
