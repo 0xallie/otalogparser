@@ -63,14 +63,17 @@ for line in lines:
             size = f"{size / 1000**2:.2f} MB"
         warning(f"Update needs {size} more free space")
 
+for line in lines:
     if m := re.search(r"preallocation of (\d+) bytes failed", line):
         size = int(m.group(1))
         if size >= 1024**3:
             size = f"{size / 1000**3:.2f} GB"
         else:
             size = f"{size / 1000**2:.2f} MB"
-        fatal(f"Insufficient available storage. Update requires at least {size}.")
+        error(f"Insufficient available storage. Update requires at least {size}.")
+        break
 
+for line in lines:
     if "tss request:<<<<<<<<<<" in line:
         tss_request = base64.b64decode(lines[lines.index(line) + 1])
         if args.print_tss_request:
