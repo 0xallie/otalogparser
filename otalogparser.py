@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from packaging import version
-from pyasn1.codec.der.decoder import decode
+from pyasn1.codec.der.decoder import decode as asn1_decode
 from rich import print
 
 
@@ -89,7 +89,7 @@ if "@BCert" not in tss_request:
 if args.print_bcert:
     print(base64.b64encode(tss_request["@BCert"]).decode())
 
-asn1, _ = decode(tss_request["@BCert"])
+asn1, _ = asn1_decode(tss_request["@BCert"])
 root = asn1[0]
 
 try:
@@ -106,7 +106,7 @@ else:
 
 try:
     sep_version_raw = next(x[1] for x in root[7] if str(x[0]) == "1.2.840.113635.100.8.7")
-    sep_version_obj, _ = decode(sep_version_raw)
+    sep_version_obj, _ = asn1_decode(sep_version_raw)
     sep_version = str(sep_version_obj[0])
 except (LookupError, StopIteration):
     warning("Unable to find SEP version in BCert")
