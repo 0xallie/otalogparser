@@ -105,7 +105,7 @@ else:
         error(f"BCert is expired (expires: {expiry})")
 
 try:
-    sep_version_raw = next(x[1] for x in root[-1] if str(x[0]) == "1.2.840.113635.100.8.7")
+    sep_version_raw = next(x[1] for x in root[7] if str(x[0]) == "1.2.840.113635.100.8.7")
     sep_version_obj, _ = decode(sep_version_raw)
     sep_version = str(sep_version_obj[0])
 except LookupError:
