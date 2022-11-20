@@ -103,15 +103,12 @@ else:
         error(f"BCert is expired (expires: {expiry})")
 
 try:
-    data = str(asn1[0][-1][-1][-1])
+    data = asn1[0][-1][-1][-1]
+    sep_version = str(decode(data)[0][0])
 except LookupError:
     warning("Unable to find SEP version in BCert")
-sep_version = None
-if m := re.search(r"[\d.]+$", data):
-    sep_version = m.group()
-    info(f"SEP version: [cyan]{sep_version}[/cyan]")
 else:
-    warning("Field does not contain SEP version?!")
+    info(f"SEP version: [cyan]{sep_version}[/cyan]")
 
 if target_version := tss_request.get("ProductMarketingVersion"):
     info(f"Target version: [cyan]{target_version}[/cyan]")
