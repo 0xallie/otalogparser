@@ -90,21 +90,24 @@ if args.print_bcert:
     print(base64.b64encode(tss_request["@BCert"]).decode())
 
 asn1, _ = decode(tss_request["@BCert"])
+root = asn1[0]
 
 try:
-    expiry = str(asn1[0][4][-1])
+    validity = root[4]
+    valid_from, valid_to = validity
 except LookupError:
     warning("Unable to find expiry date in BCert")
 else:
-    expiry = datetime.strptime(expiry, "%y%m%d%H%M%S%z")
+    expiry = datetime.strptime(str(valid_to), "%y%m%d%H%M%S%z")
     if expiry > datetime.now().astimezone():
         success(f"BCert is valid (expires: {expiry})")
     else:
         error(f"BCert is expired (expires: {expiry})")
 
 try:
-    data = asn1[0][-1][-1][-1]
-    sep_version = str(decode(data)[0][0])
+    sep_version_raw = next(x[1] for x in root[-1] if str(x[0]) == "1.2.840.113635.100.8.7")
+    sep_version_obj, _ = decode(sep_version_raw)
+    sep_version = str(sep_version_obj[0])
 except LookupError:
     warning("Unable to find SEP version in BCert")
 else:
